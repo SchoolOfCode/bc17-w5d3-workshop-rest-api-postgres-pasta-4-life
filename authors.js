@@ -2,7 +2,7 @@
 import { pool } from "./db/index.js";
 
 export async function getAuthors() {
-  const query = "SELECT * FROM Pasta 4 life";
+  const query = "SELECT * FROM authors";
   // Use the pool object to send the query to the database
   const result = await pool.query(query);
   console.log(result);
@@ -10,9 +10,19 @@ export async function getAuthors() {
   return result.rows;
   // Query the database and return all authors
 }
-
+// Query the database and return the book with a matching id or null
 export async function getAuthorById(id) {
-  // Query the database and return the author with a matching id or null
+  // Define the SQL query to fetch the book with the specified id from the 'books' table
+  const queryText = "SELECT * FROM authors WHERE id = $1";
+
+  // Use the pool object to send the query to the database
+  // passing the id as a parameter to prevent SQL injection
+  const result = await pool.query(queryText, [id]);
+
+  // The rows property of the result object contains the retrieved records
+  // If a book with the specified id exists, it will be the first element in the rows array
+  // If no book exists with the specified id, the rows array will be empty
+  return result.rows[0] || null;
 }
 
 export async function createAuthor(author) {
