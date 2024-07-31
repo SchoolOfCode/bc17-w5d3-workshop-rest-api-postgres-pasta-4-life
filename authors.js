@@ -2,6 +2,12 @@
 import { pool } from "./db/index.js";
 
 export async function getAuthors() {
+  const query = "SELECT * FROM Pasta 4 life";
+  // Use the pool object to send the query to the database
+  const result = await pool.query(query);
+  console.log(result);
+  // The rows property of the result object contains the retrieved records
+  return result.rows;
   // Query the database and return all authors
 }
 
