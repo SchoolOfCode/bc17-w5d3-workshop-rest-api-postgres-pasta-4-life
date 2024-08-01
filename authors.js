@@ -1,6 +1,7 @@
 // Import the 'pool' object so our helper functions can interact with the PostgreSQL database
 import { pool } from "./db/index.js";
 
+// Query the database and return all authors
 export async function getAuthors() {
   const query = "SELECT * FROM authors";
   // Use the pool object to send the query to the database
@@ -8,8 +9,8 @@ export async function getAuthors() {
   console.log(result);
   // The rows property of the result object contains the retrieved records
   return result.rows;
-  // Query the database and return all authors
 }
+
 // Query the database and return the book with a matching id or null
 export async function getAuthorById(id) {
   // Define the SQL query to fetch the book with the specified id from the 'books' table
@@ -26,7 +27,19 @@ export async function getAuthorById(id) {
 }
 
 export async function createAuthor(author) {
-  // Query the database to create an author and return the newly created author
+  // SQL query
+  const queryString = `INSERT INTO AUTHORS (first_name, last_name) 
+  VALUES ($1, $2) 
+  RETURNING *`;
+
+  // Destructure first_name and last_name from the author object
+  const { first_name, last_name } = author;
+
+  // Execute the query with values provided in request
+  const result = await pool.query(queryString, [first_name, last_name]);
+
+  // Return the newly inserted author record or null
+  return result.rows[0] || null;
 }
 
 export async function updateAuthorById(id, updates) {
